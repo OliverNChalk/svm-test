@@ -1,0 +1,15 @@
+[package]
+name = "faucet"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[features]
+no-entrypoint = []
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+solana-program = { workspace = true }
+spl-token = { workspace = true }

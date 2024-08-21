@@ -1,0 +1,36 @@
+[package]
+name = "svm-test"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = []
+spl-token = ["dep:spl-token", "dep:spl-associated-token-account"]
+
+[dependencies]
+async-trait = "0.1.81"
+dashmap = "6.0.1"
+flate2 = "1.0.32"
+futures = "0.3.30"
+itertools = "0.13.0"
+litesvm = { workspace = true }
+serde = "1.0.208"
+serde_json = "1.0.125"
+serde_with = { version = "3.9.0", features = ["hex"] }
+solana-account-decoder = { workspace = true }
+solana-client = { workspace = true }
+solana-logger = { workspace = true }
+solana-program = { workspace = true }
+solana-sdk = { workspace = true }
+spl-associated-token-account = { version = "3.0.0", optional = true }
+spl-token = { workspace = true, optional = true }
+tokio = "1.39.3"
+tracing = "0.1.40"
+
+[dev-dependencies]
+expect-test = "1.5.0"
+faucet = { workspace = true }
+
+[[test]]
+name = "program_integration_test"
+required-features = ["spl-token"]

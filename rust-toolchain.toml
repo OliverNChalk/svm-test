@@ -1,0 +1,5 @@
+# Try to align with the latest rust & solana version:
+#
+# https://github.com/solana-labs/solana/blob/v1.18/rust-toolchain.toml
+[toolchain]
+channel = "1.75.0"
