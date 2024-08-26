@@ -50,3 +50,9 @@ for now you can interface with the `Harness` via environment variables:
 If you wish to contribute changes to the API or fixes please open a PR. Keep in
 mind the goals of simplicity, new features should enable use cases, not just
 make certain use cases more ergonomic at the expense of simplicity.
+
+## Acknowledgement
+
+`svm-test` uses the fabulous [LiteSVM][0] crate for the core transaction & accounts logic.
+
+[0]: https://github.com/LiteSVM/litesvm
