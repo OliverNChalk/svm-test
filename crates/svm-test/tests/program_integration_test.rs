@@ -49,7 +49,7 @@ fn faucet() {
     // Assert.
     expect![[r#"
         TransactionMetadata {
-            signature: TkYH3gZ16Qy5sXhy4Xu1jU8u5MfVgmeiDhN62FiSaCSewV4D3j7DveN7YhHdAGSKc5D7mU1umyoF5KY951hjTQX,
+            signature: 3fUbwymETnKUx2ijUcW6VT4FVTm6JM6sAypyfUAzekHUWjP6MoKGma1MG2tmpHVnfbJ3v2aD1WkgcGPmHF4dUSta,
             logs: [
                 "Program 69jHfHKn5N6sw9ZacqFzVVhETGiRkh9LD3q9YrfmAA6v invoke [1]",
                 "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [2]",
@@ -95,7 +95,7 @@ fn faucet() {
     expect![[r#"
         [
             (
-                5Z6Ay5NEcbg3xhopc522sBCRXQujkTiuDRnHGfQdcnSf,
+                AKnL4NNf3DGWZJS6cPknBuEGnVsV4A4m5tgebLHaRSZ9,
                 Account {
                     lamports: 999995000,
                     data.len: 0,
@@ -105,14 +105,14 @@ fn faucet() {
                 },
             ),
             (
-                5vUprZVMWkZgRdVKoEFp5fJHdeWvGXJQrGErFNwAysL4,
+                3wvJdyFnGvaMWpbq93NU91SggiVRveULUXL6iX5VZDGP,
                 Account {
                     lamports: 2039280,
                     data.len: 165,
                     owner: TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA,
                     executable: false,
                     rent_epoch: 0,
-                    data: c6fa7af3bedbad3a3d65f36aabc97431b1bbe4c2d2f6e0e47ca60203452f5d6143a72e714401762df66b68c26dfbdf2682aaec9f2474eca4613e424a0fbafd3c,
+                    data: c6fa7af3bedbad3a3d65f36aabc97431b1bbe4c2d2f6e0e47ca60203452f5d618a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c,
                 },
             ),
             (

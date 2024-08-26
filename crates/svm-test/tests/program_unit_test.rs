@@ -34,7 +34,7 @@ fn memo() {
     // Assert.
     expect![[r#"
         TransactionMetadata {
-            signature: g7Cd7AET73a2vCsjgaoP49tTwvNJ1Hxqih3NFvG5mHZvWY9rMfr4s11GStNaWAdHJkFEKLdqDh88bVZiEtHRBFP,
+            signature: 32qrmjZC3XfzvagJHVozcNWnjW24uBrcdGmUP5r31LstZM3nAsH7cENbuWzW29dyQWLoCTBjBYV6xNrPKS7FJPsG,
             logs: [
                 "Program 4vJ9JU1bJJE96FWSJKvHsmmFADCg4gpZQff4P3bkLKi invoke [1]",
                 "Program 4vJ9JU1bJJE96FWSJKvHsmmFADCg4gpZQff4P3bkLKi consumed 36 of 200000 compute units",
@@ -53,7 +53,7 @@ fn memo() {
     expect![[r#"
         [
             (
-                5Z6Ay5NEcbg3xhopc522sBCRXQujkTiuDRnHGfQdcnSf,
+                AKnL4NNf3DGWZJS6cPknBuEGnVsV4A4m5tgebLHaRSZ9,
                 Account {
                     lamports: 999995000,
                     data.len: 0,
