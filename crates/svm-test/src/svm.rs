@@ -70,7 +70,7 @@ where
         self.inner.get_account(key)
     }
 
-    pub fn get_sysvar<T>(&mut self) -> T
+    pub fn get_sysvar<T>(&self) -> T
     where
         T: Sysvar + SysvarId,
     {
