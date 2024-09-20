@@ -523,7 +523,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4114279215a005bc675e386011e594e1d9b800918cea18fcadadcce864a2046b"
 dependencies = [
  "borsh-derive 0.10.3",
- "hashbrown 0.13.2",
+ "hashbrown 0.12.3",
 ]
 
 [[package]]
@@ -1533,6 +1533,9 @@ name = "hashbrown"
 version = "0.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8a9ee70c43aaf417c914396645a0fa852624801b24ebb7ae78fe8272889ac888"
+dependencies = [
+ "ahash 0.7.8",
+]
 
 [[package]]
 name = "hashbrown"
@@ -1945,7 +1948,7 @@ checksum = "78b3ae25bc7c8c38cec158d1f2757ee79e9b3740fbc7ccf0e59e4b08d793fa89"
 [[package]]
 name = "litesvm"
 version = "0.1.0"
-source = "git+https://github.com/OliverNChalk/litesvm#be0eb1242b3fb4eeeb00ab9d383d1fdd1fc1561b"
+source = "git+https://github.com/OliverNChalk/litesvm#87d268bd8185c1a5ce5d1db9d6f10944a01d721d"
 dependencies = [
  "bincode",
  "indexmap 2.4.0",
@@ -2258,7 +2261,7 @@ version = "0.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "af1844ef2428cc3e1cb900be36181049ef3d3193c63e43026cfe202983b27a56"
 dependencies = [
- "proc-macro-crate 3.1.0",
+ "proc-macro-crate 1.3.1",
  "proc-macro2",
  "quote",
  "syn 2.0.75",
@@ -4496,10 +4499,11 @@ checksum = "6bdef32e8150c2a081110b42772ffe7d7c9032b606bc226c8260fd97e0976601"
 
 [[package]]
 name = "svm-test"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "async-trait",
  "dashmap 6.0.1",
+ "derivative",
  "expect-test",
  "faucet",
  "flate2",

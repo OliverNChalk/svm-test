@@ -4,6 +4,7 @@ use std::ops::{Deref, DerefMut};
 use std::path::PathBuf;
 use std::sync::{OnceLock, RwLock};
 
+use derivative::Derivative;
 use serde::{Deserialize, Serialize};
 use serde_with::serde_as;
 use solana_account_decoder::UiAccountEncoding;
@@ -45,10 +46,13 @@ pub fn get_static_cache() -> &'static RpcCache {
     STATIC_CACHE.get_or_init(|| read_json(&test_static_data_path()))
 }
 
+#[derive(Derivative)]
+#[derivative(Debug)]
 pub struct TestRpc {
     static_cache: &'static RpcCache,
     cache: RwLock<WriteOnDrop<RpcCache>>,
     /// If the RPC is set the cache file will be ignored & overwritten.
+    #[derivative(Debug = "ignore")]
     rpc: Option<RpcClient>,
 }
 

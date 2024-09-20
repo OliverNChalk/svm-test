@@ -1,6 +1,6 @@
 [package]
 name = "svm-test"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 [features]
@@ -10,6 +10,7 @@ spl-token = ["dep:spl-token", "dep:spl-associated-token-account"]
 [dependencies]
 async-trait = "0.1.81"
 dashmap = "6.0.1"
+derivative = "2.2.0"
 flate2 = "1.0.32"
 futures = "0.3.30"
 itertools = "0.13.0"

@@ -26,7 +26,7 @@ impl Harness {
             if std::env::var("TEST_DEBUG").is_ok() {
                 #[rustfmt::skip]
                 solana_logger::setup_with_default(
-                    "mimicry=debug,\
+                    "svm_test=debug,\
                      solana_rbpf::vm=debug,\
                      solana_runtime::message_processor=debug,\
                      solana_runtime::system_instruction_processor=trace",
@@ -74,6 +74,7 @@ impl Harness {
     }
 }
 
+#[derive(Debug)]
 pub struct Scenario {
     runtime: &'static tokio::runtime::Runtime,
     rpc: TestRpc,
