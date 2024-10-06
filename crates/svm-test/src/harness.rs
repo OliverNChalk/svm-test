@@ -102,6 +102,7 @@ impl AccountLoader for Scenario {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct ScenarioWithOverrides {
     scenario: Arc<Scenario>,
     pub overrides: BTreeMap<Pubkey, Account>,

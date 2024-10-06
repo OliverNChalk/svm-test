@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 pub use litesvm::types::{FailedTransactionMetadata, TransactionMetadata, TransactionResult};
 use solana_sdk::account::{Account, AccountSharedData};
 use solana_sdk::message::legacy::BUILTIN_PROGRAMS_KEYS;
@@ -129,8 +131,14 @@ where
 
         // Resolve transaction.
         let hash = tx.message.hash();
-        let sanitized =
-            SanitizedTransaction::try_create(tx, hash, Some(false), &self.inner.accounts).unwrap();
+        let sanitized = SanitizedTransaction::try_create(
+            tx,
+            hash,
+            Some(false),
+            &self.inner.accounts,
+            &HashSet::default(),
+        )
+        .unwrap();
 
         // Load any missing accounts.
         for key in sanitized.message().account_keys().iter().filter(|key| {
