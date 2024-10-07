@@ -363,6 +363,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "auto_impl"
+version = "1.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3c87f3f15e7794432337fc718554eaa4dc8f04c9677a950ffe366f20a162ae42"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.79",
+]
+
+[[package]]
 name = "autocfg"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4676,6 +4687,7 @@ name = "svm-test"
 version = "0.1.1"
 dependencies = [
  "async-trait",
+ "auto_impl",
  "dashmap 6.1.0",
  "derivative",
  "expect-test",

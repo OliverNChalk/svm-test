@@ -9,6 +9,7 @@ spl-token = ["dep:spl-token", "dep:spl-associated-token-account"]
 
 [dependencies]
 async-trait = "0.1.81"
+auto_impl.workspace = true
 dashmap = "6.0.1"
 derivative = "2.2.0"
 flate2 = "1.0.32"

@@ -3,6 +3,7 @@ resolver = "2"
 members = ["crates/*", "programs/*"]
 
 [workspace.dependencies]
+auto_impl = "1.2.0"
 faucet = { path = "./programs/faucet" }
 litesvm = { git = "https://github.com/OliverNChalk/litesvm", branch = "solana-2" }
 solana-account-decoder = "2.0.13"
