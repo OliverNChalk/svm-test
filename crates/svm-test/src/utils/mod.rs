@@ -2,7 +2,7 @@ mod load_elf;
 mod locate_manifest;
 mod pack_to_vec;
 mod read_json_gz;
-#[cfg(feature = "spl-token")]
+#[cfg(feature = "spl")]
 pub mod spl_token;
 mod test_payer;
 mod write_on_drop;

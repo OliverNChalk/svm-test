@@ -121,10 +121,10 @@ where
     #[allow(clippy::result_large_err)]
     pub fn simulate_transaction(
         &mut self,
-        tx: VersionedTransaction,
+        tx: impl Into<VersionedTransaction>,
     ) -> Result<(TransactionMetadata, Vec<(Pubkey, AccountSharedData)>), FailedTransactionMetadata>
     {
-        let tx = self.sanitize_and_load_accounts(tx);
+        let tx = self.sanitize_and_load_accounts(tx.into());
 
         self.inner
             .simulate_transaction(tx.to_versioned_transaction())
@@ -133,9 +133,9 @@ where
     #[allow(clippy::result_large_err)]
     pub fn execute_transaction(
         &mut self,
-        tx: VersionedTransaction,
+        tx: impl Into<VersionedTransaction>,
     ) -> Result<TransactionMetadata, FailedTransactionMetadata> {
-        let tx = self.sanitize_and_load_accounts(tx);
+        let tx = self.sanitize_and_load_accounts(tx.into());
 
         self.inner.send_transaction(tx.to_versioned_transaction())
     }

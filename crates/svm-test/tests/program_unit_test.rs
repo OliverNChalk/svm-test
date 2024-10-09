@@ -29,7 +29,7 @@ fn memo() {
     );
 
     // Simulate (run without updating state).
-    let (meta, accounts) = svm.simulate_transaction(tx.into()).unwrap();
+    let (meta, accounts) = svm.simulate_transaction(tx).unwrap();
 
     // Assert.
     expect![[r#"
