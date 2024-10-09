@@ -2,8 +2,8 @@ use std::collections::HashSet;
 
 pub use litesvm::types::{FailedTransactionMetadata, TransactionMetadata, TransactionResult};
 use solana_sdk::account::{Account, AccountSharedData};
-use solana_sdk::message::legacy::BUILTIN_PROGRAMS_KEYS;
 use solana_sdk::pubkey::Pubkey;
+use solana_sdk::reserved_account_keys::ReservedAccountKeys;
 use solana_sdk::sysvar::{Sysvar, SysvarId};
 use solana_sdk::transaction::{SanitizedTransaction, VersionedTransaction};
 use solana_sdk::{
@@ -20,6 +20,7 @@ const PRE_LOADED: &[Pubkey] =
 pub struct Svm<L> {
     inner: litesvm::LiteSVM,
     pub loader: L,
+    reserved_account_keys: ReservedAccountKeys,
 }
 
 impl<L> Default for Svm<L>
@@ -27,7 +28,11 @@ where
     L: AccountLoader + Default,
 {
     fn default() -> Self {
-        Svm { inner: Self::inner(), loader: Default::default() }
+        Svm {
+            inner: Self::inner(),
+            loader: Default::default(),
+            reserved_account_keys: ReservedAccountKeys::new_all_activated(),
+        }
     }
 }
 
@@ -49,7 +54,11 @@ where
     }
 
     pub fn new(loader: L) -> Self {
-        Svm { inner: Self::inner(), loader }
+        Svm {
+            inner: Self::inner(),
+            loader,
+            reserved_account_keys: ReservedAccountKeys::new_all_activated(),
+        }
     }
 
     /* /////////////////////////////////////////////////////////////////////////////
@@ -71,9 +80,16 @@ where
 
     #[cfg(feature = "spl")]
     pub fn load_spl_program(&mut self, program: SplProgram) {
-        let elf = match program {
-            SplProgram::Token => litesvm::spl,
+        let (program_id, program_bytes) = match program {
+            SplProgram::Token => (spl_token::ID, litesvm::spl::TOKEN_ELF),
+            SplProgram::Token2022 => (spl_token_2022::ID, litesvm::spl::TOKEN_2022_ELF),
+            SplProgram::AssociatedTokenAccount => {
+                (spl_associated_token_account::ID, litesvm::spl::ASSOCIATED_TOKEN_ACCOUNT_ELF)
+            }
         };
+
+        self.inner
+            .add_program(&bpf_loader::ID, program_id, program_bytes);
     }
 
     pub fn get(&self, key: &Pubkey) -> Option<Account> {
@@ -151,7 +167,7 @@ where
         // Load any missing accounts.
         for key in sanitized.message().account_keys().iter().filter(|key| {
             !PRE_LOADED.contains(key)
-                && !BUILTIN_PROGRAMS_KEYS.contains(key)
+                && !self.reserved_account_keys.is_reserved(key)
                 && key != &&compute_budget::ID
         }) {
             // We only go to the loader the first time an account is touched.
