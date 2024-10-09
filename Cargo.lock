@@ -1887,7 +1887,7 @@ dependencies = [
 [[package]]
 name = "litesvm"
 version = "0.1.0"
-source = "git+https://github.com/OliverNChalk/litesvm?branch=solana-2#f47fe091b889c58af518b03b608259842d422ec1"
+source = "git+https://github.com/OliverNChalk/litesvm?branch=solana-2#41006d527717f03552ee551f0d2aa1f5b3e3deb0"
 dependencies = [
  "bincode",
  "indexmap 2.6.0",
@@ -4705,6 +4705,7 @@ dependencies = [
  "solana-sdk",
  "spl-associated-token-account",
  "spl-token",
+ "spl-token-2022 5.0.2",
  "tokio",
  "tracing",
 ]

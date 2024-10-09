@@ -5,7 +5,7 @@ edition = "2021"
 
 [features]
 default = []
-spl-token = ["dep:spl-token", "dep:spl-associated-token-account"]
+spl = ["dep:spl-associated-token-account", "dep:spl-token", "dep:spl-token-2022"]
 
 [dependencies]
 async-trait = "0.1.81"
@@ -25,6 +25,7 @@ solana-logger = { workspace = true }
 solana-sdk = { workspace = true }
 spl-associated-token-account = { workspace = true, optional = true }
 spl-token = { workspace = true, optional = true }
+spl-token-2022 = { workspace = true, optional = true }
 tokio = "1.39.3"
 tracing = "0.1.40"
 

@@ -11,6 +11,7 @@ use solana_sdk::{
     secp256k1_program, sysvar,
 };
 
+use crate::spl::SplProgram;
 use crate::AccountLoader;
 
 const PRE_LOADED: &[Pubkey] =
@@ -66,6 +67,13 @@ where
     pub fn load_program(&mut self, program_id: Pubkey, program_name: &str) {
         let elf = crate::utils::load_program_elf(program_name);
         self.inner.add_program(&bpf_loader::ID, program_id, &elf);
+    }
+
+    #[cfg(feature = "spl")]
+    pub fn load_spl_program(&mut self, program: SplProgram) {
+        let elf = match program {
+            SplProgram::Token => litesvm::spl,
+        };
     }
 
     pub fn get(&self, key: &Pubkey) -> Option<Account> {
