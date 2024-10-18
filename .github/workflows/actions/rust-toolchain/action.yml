@@ -7,6 +7,9 @@ inputs:
 runs:
   using: "composite"
   steps:
+    # Remove once we get to solana 2.1
+    - run: sudo apt-get install protobuf-compiler
+      shell: bash
     - id: get-toolchain
       shell: bash
       run: |

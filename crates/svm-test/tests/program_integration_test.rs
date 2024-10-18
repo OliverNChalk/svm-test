@@ -2,6 +2,7 @@
 //! programs. This allows for seamless integration testing against already
 //! deployed testnet/mainnet accounts.
 use expect_test::expect;
+use litesvm::types::SimulatedTransactionInfo;
 use solana_sdk::account::{Account, ReadableAccount};
 use solana_sdk::instruction::{AccountMeta, Instruction};
 use solana_sdk::program_pack::Pack;
@@ -44,7 +45,7 @@ fn faucet() {
     );
 
     // Simulate (run without updating state).
-    let (meta, accounts) = svm.simulate_transaction(tx.into()).unwrap();
+    let SimulatedTransactionInfo { meta, post_accounts } = svm.simulate_transaction(tx).unwrap();
 
     // Assert.
     expect![[r#"
@@ -127,14 +128,14 @@ fn faucet() {
                 },
             ),
         ]
-    "#]].assert_debug_eq(&accounts);
+    "#]].assert_debug_eq(&post_accounts);
 
     // TODO: Consider making a helper for this.
     let faucet_before = spl_token::state::Account::unpack(&svm.get(&faucet_usdc).unwrap().data)
         .unwrap()
         .amount;
     let faucet_after = spl_token::state::Account::unpack(
-        accounts
+        post_accounts
             .iter()
             .find(|(key, _)| key == &faucet_usdc)
             .unwrap()
@@ -151,7 +152,7 @@ fn faucet() {
             .unwrap()
             .amount;
     let recipient_after = spl_token::state::Account::unpack(
-        accounts
+        post_accounts
             .iter()
             .find(|(key, _)| key == &recipient_usdc)
             .unwrap()

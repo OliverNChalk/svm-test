@@ -3,6 +3,7 @@
 use std::collections::HashMap;
 
 use expect_test::expect;
+use litesvm::types::SimulatedTransactionInfo;
 use solana_sdk::account::Account;
 use solana_sdk::instruction::Instruction;
 use solana_sdk::pubkey::Pubkey;
@@ -29,7 +30,7 @@ fn memo() {
     );
 
     // Simulate (run without updating state).
-    let (meta, accounts) = svm.simulate_transaction(tx).unwrap();
+    let SimulatedTransactionInfo { meta, post_accounts } = svm.simulate_transaction(tx).unwrap();
 
     // Assert.
     expect![[r#"
@@ -37,13 +38,13 @@ fn memo() {
             signature: 32qrmjZC3XfzvagJHVozcNWnjW24uBrcdGmUP5r31LstZM3nAsH7cENbuWzW29dyQWLoCTBjBYV6xNrPKS7FJPsG,
             logs: [
                 "Program 4vJ9JU1bJJE96FWSJKvHsmmFADCg4gpZQff4P3bkLKi invoke [1]",
-                "Program 4vJ9JU1bJJE96FWSJKvHsmmFADCg4gpZQff4P3bkLKi consumed 33 of 200000 compute units",
+                "Program 4vJ9JU1bJJE96FWSJKvHsmmFADCg4gpZQff4P3bkLKi consumed 36 of 200000 compute units",
                 "Program 4vJ9JU1bJJE96FWSJKvHsmmFADCg4gpZQff4P3bkLKi success",
             ],
             inner_instructions: [
                 [],
             ],
-            compute_units_consumed: 33,
+            compute_units_consumed: 36,
             return_data: TransactionReturnData {
                 program_id: 4vJ9JU1bJJE96FWSJKvHsmmFADCg4gpZQff4P3bkLKi,
                 data: [],
@@ -64,5 +65,5 @@ fn memo() {
             ),
         ]
     "#]]
-    .assert_debug_eq(&accounts);
+    .assert_debug_eq(&post_accounts);
 }

@@ -1,7 +1,8 @@
 use std::collections::HashSet;
 
+use litesvm::types::SimulatedTransactionInfo;
 pub use litesvm::types::{FailedTransactionMetadata, TransactionMetadata, TransactionResult};
-use solana_sdk::account::{Account, AccountSharedData};
+use solana_sdk::account::Account;
 use solana_sdk::pubkey::Pubkey;
 use solana_sdk::reserved_account_keys::ReservedAccountKeys;
 use solana_sdk::sysvar::{Sysvar, SysvarId};
@@ -11,6 +12,7 @@ use solana_sdk::{
     secp256k1_program, sysvar,
 };
 
+#[cfg(feature = "spl")]
 use crate::spl::SplProgram;
 use crate::AccountLoader;
 
@@ -46,7 +48,7 @@ where
 
     fn inner() -> litesvm::LiteSVM {
         litesvm::LiteSVM::default()
-            .with_builtins()
+            .with_builtins(None)
             .with_lamports(1_000_000u64.wrapping_mul(10u64.pow(9)))
             .with_sysvars()
             .with_sigverify(true)
@@ -122,8 +124,7 @@ where
     pub fn simulate_transaction(
         &mut self,
         tx: impl Into<VersionedTransaction>,
-    ) -> Result<(TransactionMetadata, Vec<(Pubkey, AccountSharedData)>), FailedTransactionMetadata>
-    {
+    ) -> Result<SimulatedTransactionInfo, FailedTransactionMetadata> {
         let tx = self.sanitize_and_load_accounts(tx.into());
 
         self.inner
