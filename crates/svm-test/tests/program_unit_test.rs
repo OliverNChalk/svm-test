@@ -3,6 +3,7 @@
 use std::collections::HashMap;
 
 use expect_test::expect;
+use litesvm::types::SimulatedTransactionInfo;
 use solana_sdk::account::Account;
 use solana_sdk::instruction::Instruction;
 use solana_sdk::pubkey::Pubkey;
@@ -29,7 +30,7 @@ fn memo() {
     );
 
     // Simulate (run without updating state).
-    let (meta, accounts) = svm.simulate_transaction(tx).unwrap();
+    let SimulatedTransactionInfo { meta, post_accounts } = svm.simulate_transaction(tx).unwrap();
 
     // Assert.
     expect![[r#"
@@ -64,5 +65,5 @@ fn memo() {
             ),
         ]
     "#]]
-    .assert_debug_eq(&accounts);
+    .assert_debug_eq(&post_accounts);
 }

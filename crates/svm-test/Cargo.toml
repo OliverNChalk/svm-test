@@ -35,4 +35,4 @@ faucet = { workspace = true }
 
 [[test]]
 name = "program_integration_test"
-required-features = ["spl-token"]
+required-features = ["spl"]

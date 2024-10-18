@@ -2,6 +2,7 @@
 //! programs. This allows for seamless integration testing against already
 //! deployed testnet/mainnet accounts.
 use expect_test::expect;
+use litesvm::types::SimulatedTransactionInfo;
 use solana_sdk::account::{Account, ReadableAccount};
 use solana_sdk::instruction::{AccountMeta, Instruction};
 use solana_sdk::program_pack::Pack;
@@ -44,7 +45,7 @@ fn faucet() {
     );
 
     // Simulate (run without updating state).
-    let (meta, accounts) = svm.simulate_transaction(tx.into()).unwrap();
+    let SimulatedTransactionInfo { meta, post_accounts } = svm.simulate_transaction(tx).unwrap();
 
     // Assert.
     expect![[r#"
@@ -54,9 +55,9 @@ fn faucet() {
                 "Program 69jHfHKn5N6sw9ZacqFzVVhETGiRkh9LD3q9YrfmAA6v invoke [1]",
                 "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [2]",
                 "Program log: Instruction: Transfer",
-                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 4645 of 197360 compute units",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 4645 of 197379 compute units",
                 "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success",
-                "Program 69jHfHKn5N6sw9ZacqFzVVhETGiRkh9LD3q9YrfmAA6v consumed 7429 of 200000 compute units",
+                "Program 69jHfHKn5N6sw9ZacqFzVVhETGiRkh9LD3q9YrfmAA6v consumed 7411 of 200000 compute units",
                 "Program 69jHfHKn5N6sw9ZacqFzVVhETGiRkh9LD3q9YrfmAA6v success",
             ],
             inner_instructions: [
@@ -85,7 +86,7 @@ fn faucet() {
                     },
                 ],
             ],
-            compute_units_consumed: 7429,
+            compute_units_consumed: 7411,
             return_data: TransactionReturnData {
                 program_id: TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA,
                 data: [],
@@ -127,14 +128,14 @@ fn faucet() {
                 },
             ),
         ]
-    "#]].assert_debug_eq(&accounts);
+    "#]].assert_debug_eq(&post_accounts);
 
     // TODO: Consider making a helper for this.
     let faucet_before = spl_token::state::Account::unpack(&svm.get(&faucet_usdc).unwrap().data)
         .unwrap()
         .amount;
     let faucet_after = spl_token::state::Account::unpack(
-        accounts
+        post_accounts
             .iter()
             .find(|(key, _)| key == &faucet_usdc)
             .unwrap()
@@ -151,7 +152,7 @@ fn faucet() {
             .unwrap()
             .amount;
     let recipient_after = spl_token::state::Account::unpack(
-        accounts
+        post_accounts
             .iter()
             .find(|(key, _)| key == &recipient_usdc)
             .unwrap()
