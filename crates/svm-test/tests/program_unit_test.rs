@@ -1,13 +1,12 @@
 //! These examples do not make use of `Harness` and only include local accounts
 //! & programs.
-use std::collections::HashMap;
-
 use expect_test::expect;
 use litesvm::types::SimulatedTransactionInfo;
 use solana_sdk::account::Account;
 use solana_sdk::instruction::Instruction;
 use solana_sdk::pubkey::Pubkey;
 use solana_sdk::transaction::Transaction;
+use svm_test::svm::DefaultLoader;
 use svm_test::utils::{test_payer_keypair, TEST_PAYER};
 use svm_test::Svm;
 
@@ -16,7 +15,7 @@ const MEMO_ID: Pubkey = Pubkey::new_from_array([1; 32]);
 #[test]
 fn memo() {
     // Load our program & give our test payer some funds.
-    let mut svm = Svm::new(HashMap::default());
+    let mut svm: Svm<DefaultLoader> = Svm::default();
     svm.load_program(MEMO_ID, "memo");
     svm.set(TEST_PAYER, Account { lamports: 10u64.pow(9), ..Default::default() });
 

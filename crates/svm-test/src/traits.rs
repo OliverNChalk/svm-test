@@ -42,7 +42,10 @@ pub trait AccountLoader {
     }
 }
 
-impl AccountLoader for std::collections::HashMap<Pubkey, Account> {
+impl<S> AccountLoader for std::collections::HashMap<Pubkey, Account, S>
+where
+    S: std::hash::BuildHasher,
+{
     fn load(&self, key: &Pubkey) -> Account {
         self.get(key).cloned().unwrap_or_default()
     }

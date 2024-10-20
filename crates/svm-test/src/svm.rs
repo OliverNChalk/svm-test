@@ -1,4 +1,5 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
+use std::hash::{BuildHasherDefault, DefaultHasher};
 
 use litesvm::types::SimulatedTransactionInfo;
 pub use litesvm::types::{FailedTransactionMetadata, TransactionMetadata, TransactionResult};
@@ -16,10 +17,12 @@ use solana_sdk::{
 use crate::spl::SplProgram;
 use crate::AccountLoader;
 
+pub type DefaultLoader = HashMap<Pubkey, Account, BuildHasherDefault<DefaultHasher>>;
+
 const PRE_LOADED: &[Pubkey] =
     &[ed25519_program::ID, secp256k1_program::ID, sysvar::instructions::ID];
 
-pub struct Svm<L> {
+pub struct Svm<L = DefaultLoader> {
     inner: litesvm::LiteSVM,
     pub loader: L,
     reserved_account_keys: ReservedAccountKeys,
