@@ -30,7 +30,7 @@ pub fn program_account(account: spl_token::state::Account) -> Account {
     };
     Account {
         owner: spl_token::ID,
-        data: svm_test::utils::pack_to_vec(account),
+        data: super::pack_to_vec(account),
         lamports,
         ..Default::default()
     }
