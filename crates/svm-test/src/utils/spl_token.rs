@@ -23,10 +23,15 @@ where
 }
 
 pub fn program_account(account: spl_token::state::Account) -> Account {
+    let rent = Rent::default().minimum_balance(spl_token::state::Account::LEN);
+    let lamports = match account.mint {
+        _ if account.mint == WSOL => account.amount + rent,
+        _ => rent,
+    };
     Account {
         owner: spl_token::ID,
         data: super::pack_to_vec(account),
-        lamports: Rent::default().minimum_balance(spl_token::state::Account::LEN),
+        lamports,
         ..Default::default()
     }
 }
@@ -40,7 +45,9 @@ pub fn token(mint: Pubkey, owner: Pubkey, amount: u64) -> spl_token::state::Acco
         delegated_amount: 0,
         state: AccountState::Initialized,
         is_native: match mint {
-            _ if mint == WSOL => COption::Some(0),
+            _ if mint == WSOL => {
+                COption::Some(Rent::default().minimum_balance(spl_token::state::Account::LEN))
+            }
             _ => COption::None,
         },
         close_authority: COption::None,
