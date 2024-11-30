@@ -56,129 +56,79 @@ impl From<Account> for JsonAccount {
 serde_with::serde_conv!(
     pub TxAsJsonTx,
     VersionedTransaction,
-    |tx: &VersionedTransaction| {
-        match tx.json_encode() {
-            EncodedTransaction::Json(tx) => tx,
-            _ => unreachable!(),
-        }
-    },
-    |tx: UiTransaction| -> Result<_, std::convert::Infallible> {
-        Ok(EncodedTransaction::Json(tx).decode().unwrap())
-    }
+    to_json_tx,
+    from_json_tx
 );
 
-/*
-/// A more efficient JSON representation of a [`VersionedTransaction`].
-#[serde_as]
-#[derive(Debug, Default, Clone, Serialize, Deserialize)]
-pub struct JsonVersionedTransaction {
-    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
-    pub signatures: Vec<Signature>,
-    pub message: JsonVersionedMessage,
-}
-
-impl From<JsonVersionedTransaction> for VersionedTransaction {
-    fn from(value: JsonVersionedTransaction) -> Self {
-        VersionedTransaction {
-            signatures: value.signatures,
-            message: value.message,
-        }
+fn to_json_tx(tx: &VersionedTransaction) -> UiTransaction {
+    match tx.json_encode() {
+        EncodedTransaction::Json(tx) => tx,
+        _ => unreachable!(),
     }
 }
 
-impl From<VersionedTransaction> for JsonVersionedTransaction {
-    fn from(value: VersionedTransaction) -> Self {
-        JsonVersionedTransaction {
-            signatures: value.signatures,
-            message: value.message,
-        }
+fn from_json_tx(tx: UiTransaction) -> Result<VersionedTransaction, std::convert::Infallible> {
+    Ok(EncodedTransaction::Json(tx).decode().unwrap())
+}
+
+#[cfg(test)]
+mod tests {
+    use expect_test::expect;
+    use solana_sdk::hash::Hash;
+    use solana_sdk::signer::Signer;
+    use solana_sdk::system_instruction;
+    use solana_sdk::transaction::Transaction;
+
+    use super::*;
+    use crate::utils::test_payer_keypair;
+
+    const DUMMY_PUBKEY: Pubkey = Pubkey::new_from_array([1; 32]);
+    const DUMMY_HASH: Hash = Hash::new_from_array([2; 32]);
+
+    #[test]
+    fn serialize_legacy_transaction() {
+        let tx = Transaction::new_signed_with_payer(
+            &[system_instruction::transfer(&test_payer_keypair().pubkey(), &DUMMY_PUBKEY, 500)],
+            Some(&test_payer_keypair().pubkey()),
+            &[test_payer_keypair()],
+            DUMMY_HASH,
+        )
+        .into();
+
+        // Act - Serialize.
+        let serialized = serde_json::to_string_pretty(&to_json_tx(&tx)).unwrap();
+
+        // Assert.
+        expect![[r#"
+            {
+              "signatures": [
+                "Y5KX5txmP8TwgsD2yx43AeUeHnLwPDz3nYhz3xudPMDq5AKmowKk3r3qjsGSp1VFSFhcc5T1dN9x3mqjpRpV1Xi"
+              ],
+              "message": {
+                "header": {
+                  "numRequiredSignatures": 1,
+                  "numReadonlySignedAccounts": 0,
+                  "numReadonlyUnsignedAccounts": 1
+                },
+                "accountKeys": [
+                  "AKnL4NNf3DGWZJS6cPknBuEGnVsV4A4m5tgebLHaRSZ9",
+                  "4vJ9JU1bJJE96FWSJKvHsmmFADCg4gpZQff4P3bkLKi",
+                  "11111111111111111111111111111111"
+                ],
+                "recentBlockhash": "8qbHbw2BbbTHBW1sbeqakYXVKRQM8Ne7pLK7m6CVfeR",
+                "instructions": [
+                  {
+                    "programIdIndex": 2,
+                    "accounts": [
+                      0,
+                      1
+                    ],
+                    "data": "3Bxs4hfoaMPsQgGf",
+                    "stackHeight": null
+                  }
+                ]
+              }
+            }"#]]
+        .assert_eq(&serialized);
     }
 }
-
-
-/// A more efficient JSON representation of a [`VersionedMessage`].
-#[serde_as]
-#[derive(Debug, Default, Clone, Serialize, Deserialize)]
-pub enum JsonVersionedMessage {
-    Legacy(JsonLegacyMessage),
-    V0(JsonMessageV0),
-}
-
-impl From<JsonVersionedMessage> for VersionedMessage {
-    fn from(value: JsonVersionedMessage) -> Self {
-        match value {
-            JsonVersionedMessage::Legacy(message) => VersionedMessage::Legacy(message.into()),
-            JsonVersionedMessage::V0(message) => VersionedMessage::V0(message.into()),
-        }
-    }
-}
-
-impl From<VersionedMessage> for JsonVersionedMessage {
-    fn from(value: VersionedMessage) -> Self {
-        match value {
-            VersionedMessage::Legacy(message) => JsonVersionedMessage::Legacy(JsonLegacyMessage::from(message)),
-            VersionedMessage::V0(message) => JsonVersionedMessage::V0(JsonLegacyV0::from(message)),
-        }
-    }
-}
-
-
-/// A more efficient JSON representation of a [`LegacyMessage`].
-#[serde_as]
-#[derive(Debug, Default, Clone, Serialize, Deserialize)]
-pub struct JsonLegacyMessage {
-            message: (),
-            is_writable_account_cache: (),
-}
-
-impl From<JsonLegacyMessage> for LegacyMessage<'static> {
-    fn from(value: JsonLegacyMessage) -> Self {
-        LegacyMessage {
-            message: std::borrow::Cow::Owned(value.message.into()),
-            is_writable_account_cache: value.is_writable_account_cache,
-        }
-    }
-}
-
-impl<'a> From<LegacyMessage<'a>> for JsonLegacyMessage {
-    fn from(value: LegacyMessage<'a>) -> Self {
-        JsonLegacyMessage {
-            message: value.message,
-            is_writable_account_cache: value.is_writable_account_cache,
-        }
-    }
-}
-
-/// A more efficient JSON representation of a [`legacy::Message`].
-#[serde_as]
-#[derive(Debug, Default, Clone, Serialize, Deserialize)]
-struct JsonMessage {
-    a: UiTransactionEncoding
-    header: MessageHeader,
-    account_keys: Vec<Pubkey>,
-    recent_blockhash: Hash,
-    instructions: Vec<CompiledInstruction>,
-}
-
-impl From<JsonMessage> for Message {
-    fn from(value: JsonMessage) -> Self {
-        legacy::Message {
-            header: value.header,
-            account_keys: value.account_keys,
-            recent_blockhash: value.recent_blockhash,
-            instructions: value.instructions,
-        }
-    }
-}
-
-impl From<legacy::Message> for JsonMessage {
-    fn from(value: legacy::Message) -> Self {
-        JsonMessage {
-            header: value.header,
-            account_keys: value.account_keys,
-            recent_blockhash: value.recent_blockhash,
-            instructions: value.instructions,
-        }
-    }
-}
-*/

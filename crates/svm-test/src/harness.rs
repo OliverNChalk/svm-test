@@ -63,12 +63,6 @@ impl Harness {
         scenario
     }
 
-    pub fn get_snapshot(&'static self, block: u64) -> Arc<Scenario> {
-        let rpc = TestRpc::load_snapshot(block);
-
-        Arc::new(Scenario { runtime: &self.runtime, rpc })
-    }
-
     fn load_scenario(&'static self, name: &str) -> Arc<Scenario> {
         let rpc = TestRpc::load_scenario(name);
 

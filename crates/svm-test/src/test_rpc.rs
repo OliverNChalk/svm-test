@@ -101,38 +101,32 @@ impl TestRpc {
 }
 
 impl TestRpc {
-    pub fn load_snapshot(slot: u64) -> Self {
-        let static_cache = get_static_cache();
-        let cache_path = test_data_path().join(format!("snapshots/{slot}.json.gz"));
-        let account_cache = RwLock::new(WriteOnDrop::new(
-            read_json_gz::<AccountCache>(&cache_path),
-            Some(cache_path),
-        ));
-        let tx_cache =
-            RwLock::new(WriteOnDrop::new(read_json_gz::<TxCache>(&cache_path), Some(cache_path)));
-
-        TestRpc { static_cache, account_cache, tx_cache, rpc: None }
-    }
-
     pub fn load_scenario(name: &str) -> Self {
-        let cache_path = test_data_path().join(format!("{name}.json.gz"));
         let rpc = match std::env::var("TEST_RPC") {
             Ok(url) => Some(RpcClient::new(url)),
             Err(VarError::NotPresent) => None,
             Err(VarError::NotUnicode(raw)) => panic!("Non utf8 TEST_RPC; raw={raw:?}"),
         };
 
-        assert!(rpc.is_some() || cache_path.exists(), "Need either `TEST_RPC` or test cache file");
-
-        let cache = RwLock::new(WriteOnDrop::new(
+        let account_cache_path = test_data_path().join(format!("{name}-accounts.json.gz"));
+        let account_cache = RwLock::new(WriteOnDrop::new(
             match rpc.is_some() {
                 true => AccountCache(BTreeMap::default()),
-                false => read_json_gz(&cache_path),
+                false => read_json_gz(&account_cache_path),
             },
-            Some(cache_path),
+            Some(account_cache_path),
         ));
 
-        TestRpc { static_cache: get_static_cache(), account_cache: cache, rpc }
+        let tx_cache_path = test_data_path().join(format!("{name}-tx.json.gz"));
+        let tx_cache = RwLock::new(WriteOnDrop::new(
+            match rpc.is_some() {
+                true => TxCache(BTreeMap::default()),
+                false => read_json_gz(&tx_cache_path),
+            },
+            Some(tx_cache_path),
+        ));
+
+        TestRpc { static_cache: get_static_cache(), account_cache, tx_cache, rpc }
     }
 
     pub fn account_sync(&self, runtime: &'static Runtime, key: &Pubkey) -> Account {
