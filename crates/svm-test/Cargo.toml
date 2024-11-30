@@ -23,6 +23,7 @@ solana-account-decoder = { workspace = true }
 solana-client = { workspace = true }
 solana-logger = { workspace = true }
 solana-sdk = { workspace = true }
+solana-transaction-status.workspace = true
 spl-associated-token-account = { workspace = true, optional = true }
 spl-token = { workspace = true, optional = true }
 spl-token-2022 = { workspace = true, optional = true }

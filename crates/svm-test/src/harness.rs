@@ -4,6 +4,8 @@ use std::sync::{Arc, OnceLock, Weak};
 use dashmap::DashMap;
 use solana_sdk::account::Account;
 use solana_sdk::pubkey::Pubkey;
+use solana_sdk::signature::Signature;
+use solana_sdk::transaction::VersionedTransaction;
 use test_rpc::TestRpc;
 
 use super::*;
@@ -86,6 +88,10 @@ impl Scenario {
         overrides: BTreeMap<Pubkey, Account>,
     ) -> ScenarioWithOverrides {
         ScenarioWithOverrides { scenario: self.clone(), overrides }
+    }
+
+    pub fn load_tx(&self, sig: &Signature) -> VersionedTransaction {
+        self.rpc.load_tx_sync(self.runtime, sig)
     }
 }
 
