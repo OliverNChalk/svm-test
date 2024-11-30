@@ -22,6 +22,7 @@ pub type DefaultLoader = HashMap<Pubkey, Account, BuildHasherDefault<DefaultHash
 const PRE_LOADED: &[Pubkey] =
     &[ed25519_program::ID, secp256k1_program::ID, sysvar::instructions::ID];
 
+#[derive(Clone)]
 pub struct Svm<L = DefaultLoader> {
     inner: litesvm::LiteSVM,
     pub loader: L,
