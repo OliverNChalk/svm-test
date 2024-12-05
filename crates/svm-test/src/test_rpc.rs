@@ -55,7 +55,7 @@ pub fn get_static_cache() -> &'static AccountCache {
 pub struct TestRpc {
     static_cache: &'static AccountCache,
     account_cache: RwLock<WriteOnDrop<AccountCache>>,
-    tx_cache: RwLock<WriteOnDrop<TxCache>>,
+    transaction_cache: RwLock<WriteOnDrop<TxCache>>,
     /// If the RPC is set the cache file will be ignored & overwritten.
     #[derivative(Debug = "ignore")]
     rpc: Option<RpcClient>,
@@ -70,7 +70,7 @@ impl TestRpc {
 
     pub(crate) fn load_tx_sync(&self, runtime: &Runtime, sig: &Signature) -> VersionedTransaction {
         // Try load from cache
-        if let Some(tx) = self.tx_cache.read().unwrap().get(sig) {
+        if let Some(tx) = self.transaction_cache.read().unwrap().get(sig) {
             return tx.clone();
         }
 
@@ -82,7 +82,7 @@ impl TestRpc {
             .block_on(rpc.get_transaction_with_config(
                 sig,
                 RpcTransactionConfig {
-                    commitment: Some(CommitmentConfig::processed()),
+                    commitment: Some(CommitmentConfig::confirmed()),
                     encoding: Some(UiTransactionEncoding::Base64),
                     max_supported_transaction_version: Some(1),
                 },
@@ -94,7 +94,10 @@ impl TestRpc {
             .unwrap();
 
         // Update cache.
-        self.tx_cache.write().unwrap().insert(*sig, tx.clone());
+        self.transaction_cache
+            .write()
+            .unwrap()
+            .insert(*sig, tx.clone());
 
         tx
     }
@@ -108,7 +111,12 @@ impl TestRpc {
             Err(VarError::NotUnicode(raw)) => panic!("Non utf8 TEST_RPC; raw={raw:?}"),
         };
 
-        let account_cache_path = test_data_path().join(format!("{name}-accounts.json.gz"));
+        // Ensure the scenario directory exists.
+        let scenario = test_data_path().join(name);
+        std::fs::create_dir_all(&scenario).unwrap();
+
+        // Load account cache.
+        let account_cache_path = scenario.join("accounts.json.gz");
         let account_cache = RwLock::new(WriteOnDrop::new(
             match rpc.is_some() {
                 true => AccountCache(BTreeMap::default()),
@@ -117,16 +125,17 @@ impl TestRpc {
             Some(account_cache_path),
         ));
 
-        let tx_cache_path = test_data_path().join(format!("{name}-tx.json.gz"));
-        let tx_cache = RwLock::new(WriteOnDrop::new(
+        // Load transaction cache.
+        let transaction_cache_path = scenario.join("transactions.json.gz");
+        let transaction_cache = RwLock::new(WriteOnDrop::new(
             match rpc.is_some() {
                 true => TxCache(BTreeMap::default()),
-                false => read_json_gz(&tx_cache_path),
+                false => read_json_gz(&transaction_cache_path),
             },
-            Some(tx_cache_path),
+            Some(transaction_cache_path),
         ));
 
-        TestRpc { static_cache: get_static_cache(), account_cache, tx_cache, rpc }
+        TestRpc { static_cache: get_static_cache(), account_cache, transaction_cache, rpc }
     }
 
     pub fn account_sync(&self, runtime: &'static Runtime, key: &Pubkey) -> Account {

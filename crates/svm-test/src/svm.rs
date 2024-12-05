@@ -24,7 +24,7 @@ const PRE_LOADED: &[Pubkey] =
 
 #[derive(Clone)]
 pub struct Svm<L = DefaultLoader> {
-    inner: litesvm::LiteSVM,
+    pub inner: litesvm::LiteSVM,
     pub loader: L,
     reserved_account_keys: ReservedAccountKeys,
 }
@@ -56,7 +56,7 @@ where
             .with_lamports(1_000_000u64.wrapping_mul(10u64.pow(9)))
             .with_sysvars()
             .with_sigverify(true)
-            .with_blockhash_check(true)
+        // .with_blockhash_check(true)
     }
 
     pub fn new(loader: L) -> Self {
@@ -181,6 +181,8 @@ where
             }
 
             // Programs are a bit special.
+            let key_s = key.to_string();
+            println!("{key_s}");
             let account = self.loader.load(key);
             match (account.executable, account.owner) {
                 (true, bpf_loader::ID | native_loader::ID) => {}
