@@ -55,9 +55,9 @@ fn faucet() {
                 "Program 69jHfHKn5N6sw9ZacqFzVVhETGiRkh9LD3q9YrfmAA6v invoke [1]",
                 "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [2]",
                 "Program log: Instruction: Transfer",
-                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 4645 of 197360 compute units",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 4645 of 197274 compute units",
                 "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success",
-                "Program 69jHfHKn5N6sw9ZacqFzVVhETGiRkh9LD3q9YrfmAA6v consumed 7429 of 200000 compute units",
+                "Program 69jHfHKn5N6sw9ZacqFzVVhETGiRkh9LD3q9YrfmAA6v consumed 7515 of 200000 compute units",
                 "Program 69jHfHKn5N6sw9ZacqFzVVhETGiRkh9LD3q9YrfmAA6v success",
             ],
             inner_instructions: [
@@ -86,7 +86,7 @@ fn faucet() {
                     },
                 ],
             ],
-            compute_units_consumed: 7429,
+            compute_units_consumed: 7515,
             return_data: TransactionReturnData {
                 program_id: TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA,
                 data: [],

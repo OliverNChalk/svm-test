@@ -37,13 +37,13 @@ fn memo() {
             signature: 32qrmjZC3XfzvagJHVozcNWnjW24uBrcdGmUP5r31LstZM3nAsH7cENbuWzW29dyQWLoCTBjBYV6xNrPKS7FJPsG,
             logs: [
                 "Program 4vJ9JU1bJJE96FWSJKvHsmmFADCg4gpZQff4P3bkLKi invoke [1]",
-                "Program 4vJ9JU1bJJE96FWSJKvHsmmFADCg4gpZQff4P3bkLKi consumed 36 of 200000 compute units",
+                "Program 4vJ9JU1bJJE96FWSJKvHsmmFADCg4gpZQff4P3bkLKi consumed 33 of 200000 compute units",
                 "Program 4vJ9JU1bJJE96FWSJKvHsmmFADCg4gpZQff4P3bkLKi success",
             ],
             inner_instructions: [
                 [],
             ],
-            compute_units_consumed: 36,
+            compute_units_consumed: 33,
             return_data: TransactionReturnData {
                 program_id: 4vJ9JU1bJJE96FWSJKvHsmmFADCg4gpZQff4P3bkLKi,
                 data: [],
